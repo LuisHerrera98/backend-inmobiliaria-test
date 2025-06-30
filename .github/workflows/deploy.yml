@@ -41,19 +41,26 @@ jobs:
           echo "=== Haciendo git pull ==="
           git pull origin main
           
-          echo "=== Instalando dependencias ==="
-          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/npm install
+          echo "=== Memoria disponible antes de npm install ==="
+          free -h
+          
+          echo "=== Instalando dependencias (optimizado) ==="
+          # Usar menos memoria y omitir dependencias de desarrollo
+          NODE_OPTIONS="--max-old-space-size=1024" /home/ubuntu/.nvm/versions/node/v22.17.0/bin/npm ci --only=production --no-audit --no-fund --silent
           
           echo "=== Construyendo proyecto ==="
-          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/npm run build
+          NODE_OPTIONS="--max-old-space-size=1024" /home/ubuntu/.nvm/versions/node/v22.17.0/bin/npm run build
           
           echo "=== Iniciando con PM2 en puerto 3004 ==="
-          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 start dist/main.js --name backend-inmobiliaria --env production
+          PORT=3004 /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 start dist/main.js --name backend-inmobiliaria --env production
           
           echo "=== Guardando configuración PM2 ==="
           /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 save
           
           echo "=== Estado actual de PM2 ==="
           /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 list
+          
+          echo "=== Memoria después del deploy ==="
+          free -h
           
           echo "=== Deploy completado ==="
