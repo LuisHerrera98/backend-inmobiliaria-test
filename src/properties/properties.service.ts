@@ -77,6 +77,10 @@ export class PropertiesService {
       filter.tipoOperacion = query.tipoOperacion;
     }
 
+    if (query?.ubicacion) {
+      filter.ubicacion = { $regex: query.ubicacion.toUpperCase(), $options: 'i' };
+    }
+
     const sortOptions: any = {};
     if (query?.sortBy) {
       switch (query.sortBy) {
@@ -217,6 +221,13 @@ export class PropertiesService {
       .sort({ createdAt: -1 })
       .limit(6)
       .exec();
+  }
+
+  async getUbicaciones(): Promise<string[]> {
+    const ubicaciones = await this.propertyModel
+      .distinct('ubicacion', { isActive: true })
+      .exec();
+    return ubicaciones.sort();
   }
 
   private extractPublicIdFromUrl(url: string): string | null {

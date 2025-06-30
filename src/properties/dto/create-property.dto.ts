@@ -22,6 +22,14 @@ export class CreatePropertyDto {
   @IsString()
   direccion: string;
 
+  @IsString()
+  @Transform(({ value }) => value?.toUpperCase())
+  ubicacion: string;
+
+  @IsOptional()
+  @IsString()
+  requisitos?: string;
+
   @IsOptional()
   @IsBoolean()
   @Transform(({ value }) => value === 'true' || value === true)

@@ -17,6 +17,12 @@ export class Property {
   @Prop({ required: true })
   direccion: string;
 
+  @Prop({ required: true, uppercase: true })
+  ubicacion: string;
+
+  @Prop({ required: false })
+  requisitos: string;
+
   @Prop({ default: false })
   aceptaMascotas: boolean;
 

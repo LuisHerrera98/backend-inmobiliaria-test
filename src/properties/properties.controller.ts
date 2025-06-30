@@ -57,6 +57,11 @@ export class PropertiesController {
     return this.propertiesService.getFeatured();
   }
 
+  @Get('ubicaciones/list')
+  getUbicaciones() {
+    return this.propertiesService.getUbicaciones();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.propertiesService.findOne(id);
