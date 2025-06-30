@@ -29,11 +29,11 @@ async function bootstrap() {
   );
 
   // Prefijo global para la API
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/V1');
 
   const port = process.env.PORT || 3004;
   await app.listen(port);
   
-  console.log(`🚀 Server running on http://localhost:${port}/api`);
+  console.log(`🚀 Server running on http://localhost:${port}/api/V1`);
 }
 bootstrap();

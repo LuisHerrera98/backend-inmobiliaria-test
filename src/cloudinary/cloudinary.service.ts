@@ -18,10 +18,17 @@ export class CloudinaryService {
   uploadOptions.transformation = [
     { width: 1200, crop: 'scale' },
     {
+      overlay: `text:Arial_32:${encodeURIComponent('id-' +propertyCode)},co_black`,
+      gravity: 'south',
+      y: 75,
+      x: -520,
+      opacity: 90,
+    },
+    {
       overlay: `text:Arial_32:${encodeURIComponent('id-' +propertyCode)},co_white`,
       gravity: 'south',
-      y: 70,
-      x: -200,
+      y: 75,
+      x: 520,
       opacity: 90,
     },
   ];

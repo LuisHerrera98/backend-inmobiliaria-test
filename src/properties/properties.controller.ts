@@ -17,7 +17,7 @@ import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 import { FileService } from '../file/file.service';
 
-@Controller('V1/properties')
+@Controller('properties')
 export class PropertiesController {
   constructor(
     private readonly propertiesService: PropertiesService,
