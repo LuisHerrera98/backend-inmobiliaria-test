@@ -30,8 +30,19 @@ export class PropertiesService {
     return createdProperty.save();
   }
 
-  async findAll(query?: any): Promise<Property[]> {
+  async findAll(query?: any): Promise<{
+    data: Property[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }> {
     const filter: any = { isActive: true };
+
+    // Parámetros de paginación
+    const page = query?.page ? Number(query.page) : 1;
+    const limit = query?.limit ? Number(query.limit) : 10;
+    const skip = (page - 1) * limit;
 
     // Filtros simples
     if (query?.minPrecioARS || query?.maxPrecioARS) {
@@ -87,11 +98,24 @@ export class PropertiesService {
       sortOptions.createdAt = -1;
     }
 
-    return this.propertyModel
-      .find(filter)
-      .sort(sortOptions)
-      .limit(query?.limit ? Number(query.limit) : 20)
-      .exec();
+    // Ejecutar consultas en paralelo para mejor rendimiento
+    const [data, total] = await Promise.all([
+      this.propertyModel
+        .find(filter)
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      this.propertyModel.countDocuments(filter).exec(),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string): Promise<Property> {

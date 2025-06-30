@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { PropertiesModule } from './properties/properties.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PropertiesModule } from './properties/properties.module';
     ),
     CloudinaryModule,
     PropertiesModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

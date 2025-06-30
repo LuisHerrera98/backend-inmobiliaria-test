@@ -11,6 +11,7 @@ async function bootstrap() {
       'http://localhost:3001', // Next.js dev
       'http://localhost:3000', // React dev  
       'http://localhost:3002', // Por si acaso
+      'http://localhost:3005', // Frontend en puerto 3005
     ],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
