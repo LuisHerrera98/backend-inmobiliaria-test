@@ -30,21 +30,55 @@ export class PropertiesController {
     @Body(ValidationPipe) createPropertyDto: CreatePropertyDto,
     @UploadedFiles() images: Express.Multer.File[],
   ) {
-    const property = await this.propertiesService.create(createPropertyDto);
-
+    console.log('🏠 PROPERTY CREATE DEBUG - Starting property creation');
+    console.log('📋 Property data:', createPropertyDto);
+    console.log('📸 Images received:', images?.length || 0);
+    
     if (images && images.length > 0) {
-      const propertyCode = property.code.toString();
-      const imagesArray = await this.fileService.uploadImageToCloudinary(
-        images,
-        propertyCode,
-      );
-      const propertyId = (property as any)._id.toString();
-      return this.propertiesService.update(propertyId, {
-        images: imagesArray.map((img) => img.url),
+      images.forEach((image, index) => {
+        console.log(`📸 Image ${index + 1}:`, {
+          originalname: image.originalname,
+          mimetype: image.mimetype,
+          size: image.size,
+          sizeInMB: (image.size / (1024 * 1024)).toFixed(2) + ' MB'
+        });
       });
     }
 
-    return property;
+    try {
+      console.log('💾 Creating property in database...');
+      const property = await this.propertiesService.create(createPropertyDto);
+      console.log('✅ Property created with ID:', (property as any)._id);
+
+      if (images && images.length > 0) {
+        console.log('☁️ Starting image upload to Cloudinary...');
+        const propertyCode = property.code.toString();
+        
+        try {
+          const imagesArray = await this.fileService.uploadImageToCloudinary(
+            images,
+            propertyCode,
+          );
+          console.log('✅ Images uploaded successfully:', imagesArray.length);
+          
+          const propertyId = (property as any)._id.toString();
+          const updatedProperty = await this.propertiesService.update(propertyId, {
+            images: imagesArray.map((img) => img.url),
+          });
+          console.log('✅ Property updated with image URLs');
+          return updatedProperty;
+        } catch (uploadError) {
+          console.error('❌ IMAGE UPLOAD ERROR:', uploadError);
+          throw uploadError;
+        }
+      }
+
+      console.log('✅ Property created without images');
+      return property;
+    } catch (error) {
+      console.error('❌ PROPERTY CREATION ERROR:', error);
+      throw error;
+    }
   }
 
   @Get()
