@@ -18,7 +18,7 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          echo "=== Iniciando deploy ==="
+          echo "=== Iniciando deploy backend ==="
           
           # Cargar NVM
           export NVM_DIR="$HOME/.nvm"
@@ -32,12 +32,6 @@ jobs:
           /home/ubuntu/.nvm/versions/node/v22.17.0/bin/npm --version
           /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 --version
           
-          echo "=== Parando proceso PM2 ==="
-          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 stop backend-inmobiliaria-test || echo "Proceso no estaba corriendo"
-          
-          echo "=== Eliminando proceso PM2 ==="
-          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 delete backend-inmobiliaria-test || echo "Proceso no existía"
-          
           echo "=== Haciendo git pull ==="
           git pull origin main
           
@@ -50,8 +44,14 @@ jobs:
           echo "=== Construyendo proyecto ==="
           NODE_OPTIONS="--max-old-space-size=1024" /home/ubuntu/.nvm/versions/node/v22.17.0/bin/npm run build
           
-          echo "=== Iniciando con PM2 ==="
-          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 start --name backend-inmobiliaria-test "npm start"
+          echo "=== Deploy sin downtime ==="
+          if /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 list | grep -q "backend-inmobiliaria-test"; then
+            echo "Proceso existente encontrado - Reload sin downtime"
+            /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 reload backend-inmobiliaria-test
+          else
+            echo "Proceso no existe - Iniciando nuevo"
+            /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 start --name backend-inmobiliaria-test "npm start"
+          fi
           
           echo "=== Guardando configuración PM2 ==="
           /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 save
@@ -62,4 +62,4 @@ jobs:
           echo "=== Memoria después del deploy ==="
           free -h
           
-          echo "=== Deploy completado ==="
+          echo "=== Deploy backend completado ==="
