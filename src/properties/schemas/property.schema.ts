@@ -38,6 +38,9 @@ export class Property {
   @Prop({ required: true })
   ambientes: number;
 
+  @Prop({ required: true, enum: ['venta', 'alquiler'], default: 'alquiler' })
+  tipoOperacion: string;
+
   @Prop({ type: [String], default: [] })
   images: string[]; // URLs de Cloudinary
 

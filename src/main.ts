@@ -8,10 +8,11 @@ async function bootstrap() {
   // Habilitar CORS para el frontend - MÁS PERMISIVO
   app.enableCors({
     origin: [
-      'http://localhost:3001', // Next.js dev
+      'http://localhost:3005', // Frontend Next.js en puerto 3005
+      'http://localhost:3001', // Next.js dev backup
       'http://localhost:3000', // React dev  
       'http://localhost:3002', // Por si acaso
-      'http://localhost:3005', // Frontend en puerto 3005
+      'https://inmobiliaria.alfastoreargentina.link', // Frontend en producción
     ],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,

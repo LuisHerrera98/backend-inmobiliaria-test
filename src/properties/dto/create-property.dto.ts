@@ -4,6 +4,7 @@ import {
   IsBoolean,
   IsOptional,
   IsArray,
+  IsIn,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
@@ -49,6 +50,11 @@ export class CreatePropertyDto {
   @IsNumber()
   @Type(() => Number)
   ambientes: number;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['venta', 'alquiler'])
+  tipoOperacion?: string;
 
   @IsOptional()
   @IsArray()

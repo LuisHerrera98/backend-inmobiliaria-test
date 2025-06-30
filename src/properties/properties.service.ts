@@ -73,6 +73,10 @@ export class PropertiesService {
       filter.aceptaMascotas = query.aceptaMascotas === 'true';
     }
 
+    if (query?.tipoOperacion) {
+      filter.tipoOperacion = query.tipoOperacion;
+    }
+
     const sortOptions: any = {};
     if (query?.sortBy) {
       switch (query.sortBy) {
