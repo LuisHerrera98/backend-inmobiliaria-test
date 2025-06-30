@@ -1,0 +1,50 @@
+name: Deploy Backend Inmobiliaria
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: |
+          echo "=== Iniciando deploy ==="
+          
+          # Navegar al directorio del proyecto
+          cd /home/ubuntu/projects/inmobiliaria/backend-inmobiliaria-test
+          
+          echo "=== Parando proceso PM2 ==="
+          pm2 stop backend-inmobiliaria || echo "Proceso no estaba corriendo"
+          
+          echo "=== Eliminando proceso PM2 ==="
+          pm2 delete backend-inmobiliaria || echo "Proceso no existía"
+          
+          echo "=== Haciendo git pull ==="
+          git pull origin main
+          
+          echo "=== Instalando dependencias ==="
+          npm install
+          
+          echo "=== Construyendo proyecto ==="
+          npm run build
+          
+          echo "=== Iniciando con PM2 en puerto 3004 ==="
+          pm2 start dist/main.js --name backend-inmobiliaria --env production -- --port 3004
+          
+          echo "=== Guardando configuración PM2 ==="
+          pm2 save
+          
+          echo "=== Estado actual de PM2 ==="
+          pm2 list
+          
+          echo "=== Deploy completado ==="
