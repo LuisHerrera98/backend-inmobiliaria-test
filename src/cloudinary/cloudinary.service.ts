@@ -10,13 +10,13 @@ export class CloudinaryService {
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     return new Promise((resolve, reject) => {
       const uploadOptions: any = {
-        width: 900,
+        width: 1200,
       };
 
       // Agregar overlay de texto discreto
      if (propertyCode) {
   uploadOptions.transformation = [
-    { width: 900, crop: 'scale' },
+    { width: 1200, crop: 'scale' },
     {
       overlay: `text:Arial_16:${encodeURIComponent('id-' +propertyCode)},co_white`,
       gravity: 'south',
@@ -26,7 +26,7 @@ export class CloudinaryService {
     },
   ];
 } else {
-  uploadOptions.width = 900;
+  uploadOptions.width = 1200;
 }
 
 
