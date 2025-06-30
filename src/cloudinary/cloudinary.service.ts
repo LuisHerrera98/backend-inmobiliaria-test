@@ -27,7 +27,7 @@ export class CloudinaryService {
     {
       overlay: `text:Arial_45:${encodeURIComponent('id-' +propertyCode)},co_white`,
       gravity: 'south',
-      y: 95,
+      y: 105,
       x: -520,
       opacity: 90,
     },
