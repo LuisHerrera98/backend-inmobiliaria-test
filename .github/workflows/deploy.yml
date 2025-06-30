@@ -20,31 +20,40 @@ jobs:
         script: |
           echo "=== Iniciando deploy ==="
           
+          # Cargar NVM
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          
           # Navegar al directorio del proyecto
           cd /home/ubuntu/projects/inmobiliaria/backend-inmobiliaria-test
           
+          echo "=== Verificando comandos ==="
+          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/node --version
+          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/npm --version
+          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 --version
+          
           echo "=== Parando proceso PM2 ==="
-          pm2 stop backend-inmobiliaria || echo "Proceso no estaba corriendo"
+          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 stop backend-inmobiliaria || echo "Proceso no estaba corriendo"
           
           echo "=== Eliminando proceso PM2 ==="
-          pm2 delete backend-inmobiliaria || echo "Proceso no existía"
+          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 delete backend-inmobiliaria || echo "Proceso no existía"
           
           echo "=== Haciendo git pull ==="
           git pull origin main
           
           echo "=== Instalando dependencias ==="
-          npm install
+          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/npm install
           
           echo "=== Construyendo proyecto ==="
-          npm run build
+          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/npm run build
           
           echo "=== Iniciando con PM2 en puerto 3004 ==="
-          pm2 start dist/main.js --name backend-inmobiliaria --env production -- --port 3004
+          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 start dist/main.js --name backend-inmobiliaria --env production
           
           echo "=== Guardando configuración PM2 ==="
-          pm2 save
+          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 save
           
           echo "=== Estado actual de PM2 ==="
-          pm2 list
+          /home/ubuntu/.nvm/versions/node/v22.17.0/bin/pm2 list
           
           echo "=== Deploy completado ==="
