@@ -1,9 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { json, urlencoded } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Configurar límites de tamaño para body parser
+  // Esto soluciona el problema de subida de imágenes grandes
+  // Frontend comprime a max 5MB, Cloudinary acepta hasta 10MB en plan gratuito
+  app.use(json({ limit: '50mb' }));
+  app.use(urlencoded({ extended: true, limit: '50mb' }));
 
   // Habilitar CORS para el frontend - MÁS PERMISIVO
   app.enableCors({

@@ -11,30 +11,9 @@ export class CloudinaryService {
     return new Promise((resolve, reject) => {
       const uploadOptions: any = {
         width: 1200,
+        crop: 'limit',
+        quality: 'auto',
       };
-
-      // Agregar overlay de texto discreto
-     if (propertyCode) {
-  uploadOptions.transformation = [
-    { width: 1200, crop: 'scale' },
-    {
-      overlay: `text:Arial_45:${encodeURIComponent('id-' +propertyCode)},co_black`,
-      gravity: 'south',
-      y: 75,
-      x: -520,
-      opacity: 90,
-    },
-    {
-      overlay: `text:Arial_45:${encodeURIComponent('id-' +propertyCode)},co_white`,
-      gravity: 'south',
-      y: 115,
-      x: -520,
-      opacity: 90,
-    },
-  ];
-} else {
-  uploadOptions.width = 1200;
-}
 
 
       const upload = v2.uploader.upload_stream(
