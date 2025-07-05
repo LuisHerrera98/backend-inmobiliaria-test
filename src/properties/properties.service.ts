@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Property, PropertyDocument } from './schemas/property.schema';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
@@ -127,6 +127,11 @@ export class PropertiesService {
   }
 
   async findOne(id: string): Promise<Property> {
+    // Validar que el ID sea un ObjectId válido
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException(`Invalid property ID format: ${id}`);
+    }
+
     const property = await this.propertyModel.findById(id).exec();
     if (!property) {
       throw new NotFoundException(`Property with ID ${id} not found`);
@@ -138,6 +143,11 @@ export class PropertiesService {
     id: string,
     updatePropertyDto: UpdatePropertyDto,
   ): Promise<Property> {
+    // Validar que el ID sea un ObjectId válido
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException(`Invalid property ID format: ${id}`);
+    }
+
     const property = await this.propertyModel.findById(id).exec();
 
     if (!property) {
@@ -161,6 +171,11 @@ export class PropertiesService {
   }
 
   async remove(id: string): Promise<void> {
+    // Validar que el ID sea un ObjectId válido
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException(`Invalid property ID format: ${id}`);
+    }
+
     const property = await this.propertyModel.findById(id).exec();
     if (!property) {
       throw new NotFoundException(`Property with ID ${id} not found`);

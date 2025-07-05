@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 
@@ -24,6 +24,11 @@ export class UsersService {
   }
 
   async findById(id: string): Promise<UserDocument> {
+    // Validar que el ID sea un ObjectId válido
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException(`Invalid user ID format: ${id}`);
+    }
+
     const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
@@ -50,6 +55,11 @@ export class UsersService {
   }
 
   async addFavoriteProperty(userId: string, propertyId: string): Promise<UserDocument> {
+    // Validar que el propertyId sea un ObjectId válido
+    if (!Types.ObjectId.isValid(propertyId)) {
+      throw new BadRequestException(`Invalid property ID format: ${propertyId}`);
+    }
+
     const user = await this.findById(userId);
     
     if (!user.favoriteProperties.includes(propertyId)) {
@@ -61,6 +71,11 @@ export class UsersService {
   }
 
   async removeFavoriteProperty(userId: string, propertyId: string): Promise<UserDocument> {
+    // Validar que el propertyId sea un ObjectId válido
+    if (!Types.ObjectId.isValid(propertyId)) {
+      throw new BadRequestException(`Invalid property ID format: ${propertyId}`);
+    }
+
     const user = await this.findById(userId);
     
     user.favoriteProperties = user.favoriteProperties.filter(
